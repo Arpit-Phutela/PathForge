@@ -1,12 +1,9 @@
 export const plannerSchema = {
   type: "object",
+
   properties: {
     goal: {
       type: "string",
-    },
-
-    totalEstimatedHours: {
-      type: "number",
     },
 
     nodes: {
@@ -34,11 +31,13 @@ export const plannerSchema = {
 
           riskLevel: {
             type: "string",
+
             enum: ["low", "medium", "high"],
           },
 
           dependencies: {
             type: "array",
+
             items: {
               type: "string",
             },
@@ -59,7 +58,6 @@ export const plannerSchema = {
 
   required: [
     "goal",
-    "totalEstimatedHours",
     "nodes",
   ],
 } as const;
