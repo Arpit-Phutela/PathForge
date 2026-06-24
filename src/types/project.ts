@@ -36,7 +36,11 @@ export interface AnalyzedProjectNode extends ProjectNode {
 }
 
 // Graph after deterministic backend calculations
-export interface AnalyzedProjectGraph extends ProjectGraph {
+export interface AnalyzedProjectGraph {
+  goal: string;
+
+  nodes: AnalyzedProjectNode[];
+
   totalEstimatedHours: number;
 
   criticalPathHours: number;
