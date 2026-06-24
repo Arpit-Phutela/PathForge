@@ -10,23 +10,69 @@ export function validateGraph(
 ): ValidationResult {
   const errors: string[] = [];
 
+  const MAX_NODES = 75;
+
+  // Empty goal
+  if (!graph.goal.trim()) {
+    errors.push(
+      "Project goal cannot be empty."
+    );
+  }
+
+  // Node limit
+  if (
+    graph.nodes.length >
+    MAX_NODES
+  ) {
+    errors.push(
+      `Graph exceeds maximum node limit of ${MAX_NODES}.`
+    );
+  }
+
   // Empty graph
   if (graph.nodes.length === 0) {
-    errors.push("Graph contains no nodes.");
+    errors.push(
+      "Graph contains no nodes."
+    );
   }
 
   const nodeIds = new Set<string>();
 
   // Duplicate IDs
   for (const node of graph.nodes) {
-    if (nodeIds.has(node.id)) {
-      errors.push(
-        `Duplicate node id found: ${node.id}`
-      );
-    }
 
-    nodeIds.add(node.id);
+  // Empty ID
+  if (!node.id.trim()) {
+    errors.push(
+      "Node contains an empty id."
+    );
   }
+
+  // Empty title
+  if (!node.title.trim()) {
+    errors.push(
+      `Node '${node.id}' has an empty title.`
+    );
+  }
+
+  // Invalid duration
+  if (
+    node.estimatedHours <= 0
+  ) {
+    errors.push(
+      `Node '${node.id}' must have estimatedHours greater than 0.`
+    );
+  }
+
+  // Duplicate IDs
+  if (nodeIds.has(node.id)) {
+    errors.push(
+      `Duplicate node id found: ${node.id}`
+    );
+  }
+
+  nodeIds.add(node.id);
+}
 
   // Missing dependencies + self loops
   for (const node of graph.nodes) {
