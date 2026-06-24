@@ -41,6 +41,8 @@ export interface AnalyzedProjectGraph extends ProjectGraph {
 
   criticalPathHours: number;
 
+  criticalPaths: string[][];
+
   bottleneckNodes: AnalyzedProjectNode[];
 
   isFeasible: boolean;

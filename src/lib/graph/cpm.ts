@@ -286,20 +286,78 @@ const analyzedNode:
     );
   }
 }
+const criticalNodeIds = new Set(
+  bottleneckNodes.map(
+    node => node.id
+  )
+);
 
+const criticalPaths: string[][] = [];
+function dfs(
+  currentNodeId: string,
+  currentPath: string[]
+) {
+  currentPath.push(
+    currentNodeId
+  );
+
+  const children =
+    childrenMap.get(
+      currentNodeId
+    ) ?? [];
+
+  const criticalChildren =
+    children.filter(
+      childId =>
+        criticalNodeIds.has(
+          childId
+        )
+    );
+
+  if (
+    criticalChildren.length === 0
+  ) {
+    criticalPaths.push([
+      ...currentPath,
+    ]);
+
+    return;
+  }
+
+  for (const childId of criticalChildren) {
+    dfs(
+      childId,
+      [...currentPath]
+    );
+  }
+}
+const criticalRoots =
+  bottleneckNodes.filter(
+    node =>
+      node.dependencies.length === 0
+  );
+  for (const root of criticalRoots) {
+  dfs(
+    root.id,
+    []
+  );
+}
 return {
   goal: graph.goal,
 
   nodes: analyzedNodes,
-totalEstimatedHours:
-  graph.nodes.reduce(
-    (sum, node) =>
-      sum + node.estimatedHours,
-    0
-  ),
+
+  totalEstimatedHours:
+    graph.nodes.reduce(
+      (sum, node) =>
+        sum + node.estimatedHours,
+      0
+    ),
 
   criticalPathHours:
     projectDuration,
+
+  criticalPaths,
 
   bottleneckNodes,
 
