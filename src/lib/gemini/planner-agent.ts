@@ -26,13 +26,44 @@ Goal:
 ${userGoal}
 
 Requirements:
+
 - Return a valid DAG.
-- Use realistic task durations.
+
 - Every node must have a unique id.
+
 - Dependencies must reference valid node ids.
-- Do NOT calculate total project duration.
-- Do NOT calculate critical path.
-- Only generate the project graph.
+
+- Use realistic task durations.
+
+- Assign a riskLevel.
+
+- Add canBeDeferred.
+
+Set canBeDeferred=true ONLY if the task can reasonably be postponed to a later version without preventing a working first release.
+
+Examples:
+
+Dark Mode → true
+
+Animations → true
+
+Blog → true
+
+Analytics → true
+
+Authentication → false
+
+Core Backend → false
+
+Deployment → false
+
+Portfolio Section → false
+
+Do NOT calculate project duration.
+
+Do NOT calculate critical path.
+
+Only generate the graph.
 `,
       config: {
         responseMimeType:

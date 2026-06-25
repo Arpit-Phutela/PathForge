@@ -1,55 +1,111 @@
 import { NextResponse } from "next/server";
 
-import { validateGraph } from "@/lib/validation/validate-graph";
+import {
+  runGoal,
+} from "@/lib/pathforge/run-goal";
 
-import { analyzeGraph } from "@/lib/graph/cpm";
-
-import type { ProjectGraph } from "@/types/project";
+import type {
+  ProjectConstraints,
+} from "@/types/project-constraints";
 
 export async function POST(
   request: Request
 ) {
+
   try {
-    const graph: ProjectGraph =
+
+    const body =
       await request.json();
 
-    const validationResult =
-      validateGraph(graph);
+    const goal =
+      body.goal;
+
+    const constraints:
+      ProjectConstraints = {
+
+      deadlineDays:
+        body.deadlineDays,
+
+      availableHoursPerDay:
+        body.availableHoursPerDay,
+
+      optimizationPreference:
+        body.optimizationPreference,
+    };
 
     if (
-      !validationResult.isValid
+
+      !goal ||
+
+      typeof goal !== "string"
+
     ) {
+
       return NextResponse.json(
+
         {
+
           success: false,
-          errors:
-            validationResult.errors,
+
+          error:
+            "Goal is required.",
+
         },
+
         {
+
           status: 400,
+
         }
+
       );
     }
 
-    const analyzedGraph =
-      analyzeGraph(graph);
+    const result =
+      await runGoal(
+
+        goal,
+
+        constraints
+
+      );
 
     return NextResponse.json({
+
       success: true,
-      data: analyzedGraph,
+
+      data: result,
+
     });
 
-  } catch {
-    return NextResponse.json(
-      {
-        success: false,
-        errors: [
-          "Internal server error.",
-        ],
-      },
-      {
-        status: 500,
-      }
-    );
   }
+
+  catch (error) {
+
+    return NextResponse.json(
+
+      {
+
+        success: false,
+
+        error:
+
+          error instanceof Error
+
+            ? error.message
+
+            : "Unknown error",
+
+      },
+
+      {
+
+        status: 500,
+
+      }
+
+    );
+
+  }
+
 }
